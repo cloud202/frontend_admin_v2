@@ -1,0 +1,26 @@
+.project-background{
+    background: #FFFFFF;
+}
+.step-header {
+background: #A9AFAC;
+}
+
+.sub-title{
+    color: #000000;
+    margin-left:15px;
+    margin-top: 10px;
+    /* font-weight: bold; */
+    
+}
+.project-title{
+    margin-left: 22px;
+    color: #445069;
+}
+
+.dashboard-shadow{
+    border-radius: 10px;
+    /* margin: 6px 14px 4px 14px; */
+    -webkit-box-shadow: 4px 4px 10px -3px rgba(0,0,0,0.45);
+    -moz-box-shadow: 4px 4px 10px -3px rgba(0,0,0,0.45);
+    box-shadow: 4px 4px 10px -3px rgba(0,0,0,0.45);
+}

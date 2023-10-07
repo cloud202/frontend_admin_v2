@@ -23,7 +23,10 @@ const AdminDashboard = ({reviewData,setReviewData}) => {
   const fetchProject = async(projectId)=>{
     try {
       const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${projectId}`);
-      setReviewData(data);
+      
+      const dataWithId = { ...data, _id: projectId };
+      
+      setReviewData(dataWithId);
     } catch (error) {
       console.error("Error fetching task data:", error);
     }

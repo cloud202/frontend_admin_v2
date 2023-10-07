@@ -113,6 +113,8 @@ const UpdateProject = ({reviewData, setReviewData}) => {
     }
        
     const transformedData = transformData(summaryData);
+    console.log('Transformed Data',transformedData);
+    console.log(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${reviewData._id}`)
     
     try{
       const {data} = await axios.patch(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${reviewData._id}`,transformedData);

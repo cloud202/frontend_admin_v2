@@ -31,9 +31,9 @@ const validatetoken = async() =>{
     // alert(Cookies.get("token"))
    
     const idTokenVerifier = CognitoJwtVerifier.create({
-     userPoolId: "eu-west-1_w86oJnAAs",
+     userPoolId: process.env.REACT_APP_USER_POOL_ID,
      tokenUse: "id",
-     clientId: "6ukej354mcsfff09lrvmanmjeh",
+     clientId: process.env.REACT_APP_CLIENT_ID,
     });
     try {
      const idTokenPayload = await idTokenVerifier.verify(Cookies.get("token"));

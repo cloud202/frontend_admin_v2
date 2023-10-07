@@ -18,8 +18,6 @@ import { useState } from 'react';
 import UpdateProject from './pages/admin/UpdateProject';
 
 function App() {
-  
-
 
  const [reviewData,setReviewData] = useState()
 

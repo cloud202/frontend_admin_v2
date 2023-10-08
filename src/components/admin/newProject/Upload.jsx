@@ -11,16 +11,15 @@ const Upload = ({setLinks,type,fileName,setFileName}) => {
   const [file, setFile] = useState(null);
 
   const uploadFile = async (file) => {
-    // S3 Bucket Name
-    const S3_BUCKET = "modx-1.0";
+    
 
-    // S3 Region
-    const REGION = "eu-west-1";
+    const S3_BUCKET= process.env.REACT_APP_BUCKET_NAME;
+    const REGION= process.env.REACT_APP_REGION;
 
     // S3 Credentials
     AWS.config.update({
-      accessKeyId: "AKIA4IIRXGMV2HXTOHNX",
-      secretAccessKey: "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"
+      accessKeyId: process.env.REACT_APP_ACCESS,
+      secretAccessKey: process.env.REACT_APP_SECRET,
     });
     const s3 = new AWS.S3({
       params: { Bucket: S3_BUCKET },

@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import SkeletonTable from '../../components/global/Skeleton'
+import UploadPlaybook from '../../components/admin/newProject/UploadPlaybook'
 
 const Task = () => {
   const [formMode, setFormMode] = useState('add');
@@ -22,7 +23,13 @@ const Task = () => {
   const [taskSubmitted,setTaskSubmitted] = useState(false);
   const [isLoading,setIsLoading] = useState(true);
 
+  const [fileName,setFileName] = useState({
+    playbook: []
+  });
 
+  const [links,setLinks] = useState({
+    playbook: []
+  })
 
   const [actionName,setActionName] = useState("");
   const [script,setScript] = useState("");
@@ -30,6 +37,14 @@ const Task = () => {
   const [taskIdDelete,setTaskIdDelete] = useState(null);
   const [taskIdUpdate,setTaskIdUpdate] = useState(null);
   const [taskId,setTaskId] = useState(null);
+
+  
+  const extractFileName = (url) => {
+    const parts = url.split('/');
+    const fileNameWithExtension = parts[parts.length - 1];
+    const fileName = fileNameWithExtension.split('.')[0];
+    return fileName;
+  };
 
   const submitHandler = async ()=>{
     if (
@@ -54,14 +69,13 @@ const Task = () => {
           task_actionName:actionName,
           task_script: script,
           task_admin_id:"optional",
-          task_solutionid: selectedSolId
+          task_solutionid: selectedSolId,
+          playbook: links.playbook
       }
 
       const {data} = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/master/project_task`,taskData);
-      console.log(data);
       setTask((prevData)=>[...prevData,data]);
       setTaskSubmitted(true);
-      console.log(task);
       toast({
         title: "Task Added",
         description: "The task has been added successfully.",
@@ -76,6 +90,9 @@ const Task = () => {
       setTaskType("Select an option");
       setScript("")
       setActionName("")
+
+      setLinks({playbook: []});
+      setFileName({playbook: []});
 
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -142,6 +159,17 @@ const Task = () => {
     setTaskName(rowData.name);
     setFormMode('update');
     setTaskId(rowData.task_id);
+
+    if (rowData.playbook) {
+      const extractedFileNames = {
+        playbook: rowData.playbook.map((url) => ({
+          name: extractFileName(url),
+        })),
+      };
+    
+      setFileName(extractedFileNames);
+      setLinks({ playbook: rowData.playbook });
+    }
   }
 
   const updateHandler = async()=>{
@@ -167,7 +195,8 @@ const Task = () => {
         task_actionName:actionName,
         task_script:script,
         task_admin_id:"optional",
-        task_solutionid: selectedSolId
+        task_solutionid: selectedSolId,
+        playbook: links.playbook
       }
 
       const {data} = await axios.patch(`${process.env.REACT_APP_API_URL}/api/admin/master/project_task/${taskIdUpdate}`, updatedData);
@@ -188,6 +217,9 @@ const Task = () => {
       setScript("")
       setActionName("")
       setTaskSubmitted(true);
+
+      setLinks({playbook: []});
+      setFileName({playbook: []});
 
     } catch (error) {
       console.error("Error updating phase:", error);
@@ -330,22 +362,29 @@ const Task = () => {
                   <Flex mb='12px'>
                   <FormControl isRequired mb='15px'>
                       <HStack align='start' spacing={0}>
-                      <FormLabel>Action Name</FormLabel>
-                      <Input type="text" w='70%' placeholder="Enter the action name" value={actionName} onChange={(e)=> setActionName(e.target.value)}/>
+                      <FormLabel w='80px'>Action</FormLabel>
+                      <Input type="text" w='74%' placeholder="Enter the action name" value={actionName} onChange={(e)=> setActionName(e.target.value)}/>
                       </HStack>
                     </FormControl>
 
                     <FormControl isRequired>
                       <HStack align='start' spacing={0}>
                       <FormLabel>Script</FormLabel>
-                      <Textarea placeholder="Enter the script" w='70%' value={script} onChange={(e)=> setScript(e.target.value)}/>
+                      <Textarea rows={2} placeholder="Enter the script" w='60%' value={script} onChange={(e)=> setScript(e.target.value)}/>
                       </HStack>
                     </FormControl>
                     </Flex>
                   </TabPanel>
                   }
                 </TabPanels>
-              </Tabs>          
+              </Tabs>
+
+              <FormControl isRequired mt='12px'>
+                <HStack align='start' spacing={0}>
+                  <FormLabel>Playbook</FormLabel>
+                  <UploadPlaybook setLinks={setLinks} type="playbook" fileName={fileName} setFileName={setFileName}/>
+                  </HStack>
+                </FormControl>                
             </form>
 
             <Text mt='10px' p='5px' bg='gray.50' borderRadius='5px' fontSize={{ base: '18px', md: '22px', lg: '30px' }} color="#445069">Available Tasks</Text>

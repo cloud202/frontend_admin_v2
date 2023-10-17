@@ -114,9 +114,6 @@ const Upload = ({setLinks,type,fileName,setFileName}) => {
 
       };
 
-      setTimeout(() => {
-        console.log('Files',fileName);
-      }, 3000);
   return (
     <>
     <div className='wrapper'>

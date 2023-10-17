@@ -23,6 +23,13 @@ const NewProject = () => {
     delivery: [],
     operations: []
   });
+
+  const [links,setLinks] = useState({
+    sales: [],
+    funding: [],
+    delivery: [],
+    operations: []
+  })
   
   const [formData, setFormData] = useState({
     templateName: "",
@@ -42,12 +49,7 @@ const NewProject = () => {
     id: ""
   }]);
 
-  const [links,setLinks] = useState({
-    sales: [],
-    funding: [],
-    delivery: [],
-    operations: []
-  })
+  
 
   const [summaryData,setSummaryData] = useState({
     template_name: "",

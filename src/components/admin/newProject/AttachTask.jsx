@@ -296,7 +296,7 @@ export const AttachTask = ({summaryData,setSummaryData,formData,setFormData,atta
                     ))}
             </Td>
           </Tr>
-        ) : null // Skip rendering the row if there are no attached modules
+        ) : null 
       ))}
     </Tbody>
   </Table>

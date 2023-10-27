@@ -10,12 +10,27 @@ import AttachTask from '../../components/admin/newProject/AttachTask'
 import axios from 'axios'
 import Summary from '../../components/admin/newProject/Summary'
 import { useNavigate } from 'react-router-dom';
+import Playbook from '../../components/admin/newProject/Playbook'
 
 const UpdateProject = ({reviewData, setReviewData}) => {
   const [currPage,setCurrPage] = useState(1);
   const toast = useToast();
   const navigate = useNavigate();
   const [isLoading,setIsLoading] = useState(false);
+
+  const [fileName,setFileName] = useState({
+    sales: [],
+    funding: [],
+    delivery: [],
+    operations: []
+  });
+
+  const [links,setLinks] = useState({
+    sales: [],
+    funding: [],
+    delivery: [],
+    operations: []
+  })
   
   const [formData, setFormData] = useState({
     templateName: "",
@@ -56,7 +71,7 @@ const UpdateProject = ({reviewData, setReviewData}) => {
   }
 
   const handleNext =()=>{
-    if(currPage!==5){
+    if(currPage!==6){
       setCurrPage(currPage+1);
     }   
   }
@@ -109,12 +124,13 @@ const UpdateProject = ({reviewData, setReviewData}) => {
             }, []),
           };
         }).filter((phase) => phase !== null),
+        links: links || []
       };
     }
        
     const transformedData = transformData(summaryData);
-    console.log('Transformed Data',transformedData);
-    console.log(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${reviewData._id}`)
+    // console.log('Transformed Data',transformedData);
+    // console.log(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${reviewData._id}`)
     
     try{
       const {data} = await axios.patch(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${reviewData._id}`,transformedData);
@@ -140,6 +156,13 @@ const UpdateProject = ({reviewData, setReviewData}) => {
       setIsLoading(false);
     }
   }
+
+  const extractFileName = (url) => {
+    const parts = url.split('/');
+    const fileNameWithExtension = parts[parts.length - 1];
+    const fileName = fileNameWithExtension.split('.')[0];
+    return fileName;
+  };
 
   useEffect(() => {
     if (reviewData && reviewData.phases) {
@@ -238,9 +261,25 @@ const UpdateProject = ({reviewData, setReviewData}) => {
 
         setSelectedSegments(reviewData.template_segments.map((segment)=> segment.segment_id._id));
         setSelectedIndustries(reviewData.template_industries.map((industry)=> industry.industry_id._id));
+
+        setLinks({
+          sales: reviewData.links.sales || [],
+          funding: reviewData.links.funding || [],
+          delivery: reviewData.links.delivery || [],
+          operations: reviewData.links.operations || []
+        });
+
+        if (reviewData.links) {
+          const extractedFileNames = {};
+          for (const category in reviewData.links) {
+            extractedFileNames[category] = reviewData.links[category].map((url) => ({
+              name: extractFileName(url),
+            }));
+          }
+    
+          setFileName(extractedFileNames);
+        }
     }
-
-
   }, [reviewData]);
 
   return (
@@ -254,8 +293,8 @@ const UpdateProject = ({reviewData, setReviewData}) => {
       </GridItem>
 
       <GridItem colSpan={{base: '6', sm: '6', md: '6',lg: '5' }} m="30px">
-      <Text mb='20px' textAlign='center' p='5px' bg='#389785' color='white' borderRadius='5px' fontSize={{ base: '16px', sm: '18px',md: '25px', lg: '25px' }}>Update Modernization-Journey Project Template</Text>
-        <Progress value={100/5 * currPage} size='md' colorScheme='green' mb='10px' maxW='680px'/>
+      <Text mb='20px' textAlign='center' p='5px' bg='#389785' color='white' borderRadius='5px' fontSize={{ base: '16px', sm: '18px',md: '25px', lg: '25px' }}>Update Modernisation-Journey Project Template</Text>
+        <Progress value={100/6 * currPage} size='md' colorScheme='green' mb='10px' maxW='680px'/>
 
         { currPage===1 && <DefineProject selectedSegments={selectedSegments} setSelectedSegments={setSelectedSegments} selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries} summaryData={summaryData} setSummaryData={setSummaryData} formData={formData} setFormData={setFormData} />}
         
@@ -265,13 +304,16 @@ const UpdateProject = ({reviewData, setReviewData}) => {
 
         { currPage===4 && <AttachTask summaryData={summaryData} setSummaryData={setSummaryData} formData={formData} setFormData={setFormData} attachedTasks={attachedTasks} setAttachedTasks={setAttachedTasks}/>}
         
-        { currPage===5 && <Summary summaryData={summaryData} formData={formData} />}
+        {currPage ===5 && <Playbook links={links} setLinks={setLinks} fileName={fileName} setFileName={setFileName}/>}
+
+        { currPage===6 && <Summary summaryData={summaryData} formData={formData} />}
+
 
         <Flex maxW="680px" justifyContent="space-between" alignItems="center" mt='10px'>
           <Button isDisabled={currPage===1} leftIcon={<ArrowBackIcon />} onClick={handlePrevious} colorScheme='purple' variant='outline' >Previous</Button>
           
-          <Button rightIcon={currPage!==5?<ArrowForwardIcon/>: (isLoading? <Spinner/> :<CheckIcon/>)} onClick={currPage!==5 ? handleNext: handleSubmit} colorScheme='purple' variant='outline' >{
-            currPage===4? "Review" : (currPage!==5?"Next":"Update")
+          <Button rightIcon={currPage!==6?<ArrowForwardIcon/>: (isLoading? <Spinner/> :<CheckIcon/>)} onClick={currPage!==6 ? handleNext: handleSubmit} colorScheme='purple' variant='outline' >{
+            currPage===5? "Review" : (currPage!==6?"Next":"Update")
           }</Button>
         </Flex>
 

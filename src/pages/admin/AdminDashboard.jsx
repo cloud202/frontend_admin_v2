@@ -22,9 +22,11 @@ const AdminDashboard = ({reviewData,setReviewData}) => {
 
   const fetchProject = async(projectId)=>{
     try {
+      console.log(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${projectId}`);
       const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/master/v2/project_template/${projectId}`);
       
       const dataWithId = { ...data, _id: projectId };
+      console.log('Data',data);
       
       setReviewData(dataWithId);
     } catch (error) {
@@ -58,7 +60,7 @@ const AdminDashboard = ({reviewData,setReviewData}) => {
 
         <GridItem colSpan={{base: '6', sm: '6', md: '6',lg: '5' }} className= "project-background" >
           <Box className='dashboard-shadow' display='flex' flexDirection='column' alignItems='center' justifyContent='center' textAlign='center' mt={{base: '14px',lg: '6px'}} mb={{base: '22px'}} mr={{base: '5px',sm: '8px',lg: '12px'}} ml={{base: '5px',sm: '8px',lg: '12px'}}>
-          <Text className='sub-title' fontSize={{ base: '14px',sm: '20px', md: '24px', lg: '28px' }} fontWeight={400} >Welcome {Cookies.get("username")} ,Define Modernization Journey For Your Customer</Text>
+          <Text className='sub-title' fontSize={{ base: '14px',sm: '20px', md: '24px', lg: '28px' }} fontWeight={400} >Welcome {Cookies.get("username")} ,Define Modernisation Journey For Your Customer</Text>
           <Image src={step_one} w={{ base: '100%', lg: '80%' }}/>
           </Box>
 

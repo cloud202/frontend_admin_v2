@@ -23,6 +23,13 @@ const NewProject = () => {
     delivery: [],
     operations: []
   });
+
+  const [links,setLinks] = useState({
+    sales: [],
+    funding: [],
+    delivery: [],
+    operations: []
+  })
   
   const [formData, setFormData] = useState({
     templateName: "",
@@ -42,12 +49,7 @@ const NewProject = () => {
     id: ""
   }]);
 
-  const [links,setLinks] = useState({
-    sales: [],
-    funding: [],
-    delivery: [],
-    operations: []
-  })
+  
 
   const [summaryData,setSummaryData] = useState({
     template_name: "",
@@ -165,7 +167,7 @@ const NewProject = () => {
       </GridItem>
 
       <GridItem colSpan={{base: '6', sm: '6', md: '6',lg: '5' }} m="30px">
-      <Text mb='20px' textAlign='center' p='5px' bg='#389785' color='white' borderRadius='5px' fontSize={{ base: '16px', sm: '18px',md: '25px', lg: '25px' }}>Create New Modernization-Journey Project Template</Text>
+      <Text mb='20px' textAlign='center' p='5px' bg='#389785' color='white' borderRadius='5px' fontSize={{ base: '16px', sm: '18px',md: '25px', lg: '25px' }}>Create New Modernisation-Journey Project Template</Text>
         <Progress value={100/6 * currPage} size='md' colorScheme='green' mb='10px' maxW='680px'/>
 
         { currPage===1 && <DefineProject selectedSegments={selectedSegments} setSelectedSegments={setSelectedSegments} selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries} summaryData={summaryData} setSummaryData={setSummaryData} formData={formData} setFormData={setFormData} />}

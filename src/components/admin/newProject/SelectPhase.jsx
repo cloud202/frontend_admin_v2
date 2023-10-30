@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
-import { Checkbox,Box, Button, Flex, FormControl, FormLabel, HStack, Input, Menu, MenuButton, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Text, Textarea, Th, Thead, Tr, VStack, useDisclosure, useToast } from '@chakra-ui/react';
+import { Checkbox,Box, Button, Flex, FormControl, FormLabel, HStack, Input, Menu, MenuButton, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Text, Textarea, Th, Thead, Tr, VStack, useDisclosure, useToast, Stack } from '@chakra-ui/react';
 import { ChevronDownIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import AddPhaseModal from './AddPhaseModal';
 
@@ -162,6 +162,12 @@ export const SelectPhase = ({setSummaryData,formData,setFormData,tableData,setTa
       });
     }
   }, [phaseFormSubmitted, fetchDataEffect]);
+
+  const [searchText, setSearchText] = useState('');
+
+  const filteredPhases = phase.filter((val) => {
+    return val.name.toLowerCase().includes(searchText.toLowerCase());
+  });
   
   return (
     <Flex direction="column" maxW="680px">
@@ -171,25 +177,31 @@ export const SelectPhase = ({setSummaryData,formData,setFormData,tableData,setTa
             <MenuButton w="80%" as={Button} variant="outline" colorScheme="gray" rightIcon={<ChevronDownIcon />}>
               Select an option
             </MenuButton>
-            <MenuList p='20px'>
-                {
-                    // phase && phase.map((val,ind)=> <MenuItem key={ind} onClick={() => handlePhaseSelect(val._id,val.name)}>{val.name}</MenuItem>)
-                    phase && phase.map((val,ind)=> (
-                      <HStack p='2px' key={val._id}>
-                       <Checkbox
-                        spacing={2}
-                        size='md'
-                        colorScheme='green'
-                        isChecked={checkedPhases.includes(val._id)}
-                        onChange={(e) => {handlePhaseSelect(val._id, val.name)}}
-                      >
-                        {val.name}
-                      </Checkbox>
-                      </HStack>
+            <MenuList p='10px'>
+            <Input
+              mb='4px'
+              placeholder="Search phases"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <Stack spacing={1} maxH='250px' overflow='auto'>
+              {filteredPhases.map((val, ind) => (
+                  <Checkbox
+                    key={ind}
+                     pl='6px'
+                     _hover={{backgroundColor: '#f5f3f4'}}
+                    spacing={2}
+                    size='md'
+                    colorScheme='green'
+                    isChecked={checkedPhases.includes(val._id)}
+                    onChange={() => handlePhaseSelect(val._id, val.name)}
+                  >
+                    {val.name}
+                  </Checkbox>
+              ))}
+            </Stack>
+          </MenuList>
 
-                    ))
-                }
-            </MenuList>
           </Menu>
 
         </Flex>

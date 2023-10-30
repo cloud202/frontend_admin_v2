@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import {Box,Button,Checkbox,Flex,FormLabel,HStack,Menu,MenuButton,MenuList,MenuItem,Table,TableContainer,Tbody,Td,Text,Th,Thead,Tr,Divider,
+import {Box,Button,Checkbox,Flex,FormLabel,HStack,Menu,MenuButton,MenuList,MenuItem,Table,TableContainer,Tbody,Td,Text,Th,Thead,Tr,Divider, Input, Stack,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import AddTaskModal from './AddTaskModal';
@@ -196,6 +196,12 @@ export const AttachTask = ({summaryData,setSummaryData,formData,setFormData,atta
     fetchSolDataEffect();
   }, [fetchSolDataEffect,fetchTaskDataEffect,taskSubmitted]);
 
+  const [searchText, setSearchText] = useState('');
+
+  const filteredTasks = task.filter((val) => {
+    return val.name.toLowerCase().includes(searchText.toLowerCase());
+  });
+
   return (
     <Flex direction="column" maxW="680px">
       <Text mb='10px' p='5px' bg='gray.50' borderRadius='5px' fontSize={{ base: '15px', sm: '26px',md: '30px', lg: '30px' }} color="#445069">Attach Task with Modules</Text>
@@ -206,7 +212,7 @@ export const AttachTask = ({summaryData,setSummaryData,formData,setFormData,atta
           <MenuButton w="80%" as={Button} variant="outline" colorscheme="gray" rightIcon={<ChevronDownIcon />}>
           {selectedModuleName}
           </MenuButton>
-          <MenuList p='20px'>
+          <MenuList p='10px'>
             {formData.modules.map((val) => {
               return (
                 <MenuItem
@@ -230,20 +236,29 @@ export const AttachTask = ({summaryData,setSummaryData,formData,setFormData,atta
           <MenuButton w="80%" as={Button} variant="outline" colorscheme="gray" rightIcon={<ChevronDownIcon />}>
             Select an option
           </MenuButton>
-          <MenuList p='20px'>
-          {task.map((val, ind) => (
-              <HStack p='2px' key={val._id}>
+          <MenuList p='10px'>
+            <Input
+              mb='4px'
+              placeholder="Search tasks"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <Stack gap={1} maxH='250px' overflow='auto'>
+            {filteredTasks.map((val, ind) => (
                 <Checkbox
-                  spacing={2}
+                  pl='6px'
+                  _hover={{backgroundColor: '#f5f3f4'}}
+                  key={val._id}
+                  spacing={1}
                   size='md'
                   colorScheme='green'
                   isChecked={checkedTask.includes(val._id)}
-                  onChange={() => handleTaskSelect(val._id,val.name,val.task_solutionid,val.task_actionName,val.task_type)}
+                  onChange={() => handleTaskSelect(val._id, val.name, val.task_solutionid, val.task_actionName, val.task_type)}
                 >
                   {val.name}
                 </Checkbox>
-              </HStack>
             ))}
+            </Stack>
           </MenuList>
         </Menu>
       </Flex>

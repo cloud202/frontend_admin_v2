@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import {Box,Button,Checkbox,Flex,FormLabel,HStack,Menu,MenuButton,MenuList,MenuItem,Table,TableContainer,Tbody,Td,Text,Th,Thead,Tr,Divider,
+import {Box,Button,Checkbox,Flex,FormLabel,HStack,Menu,MenuButton,MenuList,MenuItem,Table,TableContainer,Tbody,Td,Text,Th,Thead,Tr,Divider, Stack, Input,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import AddModuleModal from './AddModuleModal';
@@ -201,6 +201,12 @@ export const AttachModule = ({summaryData,setSummaryData, setFormData,tableData,
     fetchDataEffect();
   }, [fetchDataEffect]);
 
+  const [searchText, setSearchText] = useState('');
+  const filteredModules = module.filter((val) => {
+    return val.name.toLowerCase().includes(searchText.toLowerCase());
+  });
+
+
   return (
     <Flex direction="column" maxW="680px">
       <Text mb='10px' p='5px' bg='gray.50' borderRadius='5px' fontSize={{ base: '15px', sm: '26px',md: '30px', lg: '30px' }} color="#445069">Attach Modules with selected phases</Text>
@@ -211,19 +217,21 @@ export const AttachModule = ({summaryData,setSummaryData, setFormData,tableData,
           <MenuButton w="80%" as={Button} variant="outline" colorscheme="gray" rightIcon={<ChevronDownIcon />}>
             {selectedPhase ? tableData.find(phase => phase.id === selectedPhase).name : "Select a phase"}
           </MenuButton>
-          <MenuList p='20px'>
+          <MenuList >
+            <Stack p='2px' gap={0} maxH='250px' overflow='auto'>
             {tableData.map(phase => (
-              <HStack p='2px' key={phase.id}>
                 <MenuItem
-                  spacing={2}
+                pl='6px'
+                _hover={{backgroundColor: '#f5f3f4'}}
+                  key={phase.id}
                   size='md'
                   colorscheme='green'
                   onClick={() => handlePhaseSelect(phase.id)}
                 >
                   {phase.name}
                 </MenuItem>
-              </HStack>
             ))}
+            </Stack>
           </MenuList>
         </Menu>
       </Flex>
@@ -234,21 +242,30 @@ export const AttachModule = ({summaryData,setSummaryData, setFormData,tableData,
           <MenuButton w="80%" as={Button} variant="outline" colorscheme="gray" rightIcon={<ChevronDownIcon />}>
             Select an option
           </MenuButton>
-          <MenuList p='20px'>
-            {module.map((val, ind) => (
-              <HStack p='2px' key={val._id}>
+          <MenuList p='10px'>
+          <Input
+            mb='4px'
+            placeholder="Search modules"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <Stack spacing={1} maxH='250px' overflow='auto'>
+            {filteredModules.map((val, ind) => (
                 <Checkbox
+                  key={val._id}
                   spacing={2}
+                  pl='6px'
+                  _hover={{backgroundColor: '#f5f3f4'}}
                   size='md'
                   colorScheme='green'
                   isChecked={checkedModules.includes(val._id)}
-                  onChange={() => handleModuleSelect(val._id,val.name)}
+                  onChange={() => handleModuleSelect(val._id, val.name)}
                 >
                   {val.name}
                 </Checkbox>
-              </HStack>
             ))}
-          </MenuList>
+          </Stack>
+        </MenuList>
         </Menu>
       </Flex>
         <AddModuleModal module={module} setModule={setModule} moduleFormData={moduleFormData} setModuleFormData={setModuleFormData} handleRemoveButton={handleRemoveButton}/>
